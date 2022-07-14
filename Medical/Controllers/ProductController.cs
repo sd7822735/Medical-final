@@ -415,6 +415,11 @@ namespace Medical.Controllers
         }
 
 
+        public IActionResult aa() {
+
+            return View();
+        }
+
         // ============ 柏鈞 End =================
     }
 }
