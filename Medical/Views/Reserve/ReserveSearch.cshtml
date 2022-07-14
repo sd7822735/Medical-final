@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Medical.Models.Reserve>
+@{
+    ViewData["Title"] = "ReserveList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Hero Start -->
+<div class="container-fluid bg-primary py-5 hero-header mb-5">
+    <div class="row py-3">
+        <div class="col-12 text-center">
+            <h3 class="display-3 text-white animated zoomIn">預約掛號查詢</h3>
+        </div>
+    </div>
+</div>
+
+<h1>@ViewBag.name</h1>
+
+<!-- Hero End -->
+<div class="col-12 col-sm-6">
+    <table id="table1" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>預約醫生</th>
+                <th>看診日期</th>
+                <th>看診順序</th>
+                <th>預約備註</th>
+                <th>預約方式</th>
+                <th>預約狀態</th>
+                
+                
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var item in Model)
+                {
+                        <tr>
+                            <td>@item.ClinicDetail.Doctor.DoctorName</td>
+                            <td>@item.ClinicDetail.ClinicDate</td>
+                            <td>@item.SequenceNumber</td>
+                            <td>@item.RemarkPatient</td>
+                            <td>@item.Source.Source1</td>
+                            <td>@item.State.State1</td>
+                            <td>
+                                <!-- Button trigger modal -->
+                                <!--<button type="button" id="@item.ReserveId" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            取消預約
+        </button>-->
+                                @Html.ActionLink("取消預約", "Delete", new { id = item.ReserveId }, new { onclick = "return confirm('是否取消預約?')" })
+                            </td>
+                        </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">取消預約</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
+                </div>
+                <div class="modal-body">
+                    是否取消預約?                   
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">否</button>
+                    <button type="button" class="btn btn-primary">確定取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

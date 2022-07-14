@@ -1,0 +1,124 @@
+﻿@model Medical.ViewModel.CShoppingCartViewModel
+@{
+    ViewData["Title"] = "ProductDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="width: 100%;  margin: auto;">
+
+    <ul class="breadcrumb" style="background-color: white; font-size: 20px; margin-top: 30px;">
+        <li class="breadcrumb-item"><a href="">首頁</a></li>
+        <li class="breadcrumb-item"><a href="~/Product/ProductList">產品列表</a></li>
+        <li class="breadcrumb-item"><a href="~/Product/CartViewList">我的購物車</a></li>
+
+    </ul>
+
+    <div class="row" style="background-color: rgb(246, 246, 246); padding-top: 20px; padding-bottom: 20px; width:99%;margin:auto">
+        <div class="col-md-5" style=" text-align: center;margin:auto">
+            <img src="~/images/@Model.prodSpec.ProductImage" alt="@Model.prod.ProductName" style="height:250px">
+        </div>
+
+        <div class="col-md-6 offset-md-1" style="padding-left: 20px;">
+            <form action="AddToCart" method="post">
+                <br>
+                <h3>@Model.prod.ProductName</h3>
+
+                <br>
+                <h5>@Model.prodSpec.UnitPrice.ToString("C0")</h5>
+                <br>
+                <button type="submit" style="width: 90%; background-color: black; color: white;font-size: 20px;" id="btnAddToCart"> 加入購物車</button>
+
+                <br>
+                <br>
+
+                <div style="width: 90%; display: flex ; justify-content: space-between;">
+                    <span style="font-weight: bold;font-size: 20px;"> 數量: &nbsp;<input type="number" style="width: 100px;height: 30px;" value="1" name="txtCount"></span>
+                    <input value="@Model.prod.ProductId" name="txtPid" hidden>
+                    <button style="width: 140px;height: 32px;">直接購買</button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+    <br><br><br>
+
+    <!-- ==============================手風琴================================ -->
+
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="font-size:20px">
+                    商品規格
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <hr />
+                    <table class="table" style="font-size:18px">
+                        <tr><th>品名</th><td>@Model.prod.ProductName</td></tr>
+                        <tr><th>品牌名稱</th><td>@Model.prod.ProductBrand.ProductBrandName</td></tr>
+                        <tr><th>種類名稱</th><td>@Model.prod.ProductCategory.ProductCategoryName</td></tr>
+                        <tr><th>商品外觀</th><td>@Model.prodSpec.ProductAppearance</td></tr>
+                        <tr><th>商品顏色</th><td>@Model.prodSpec.ProductColor</td></tr>
+                        <tr><th>商品材質</th><td>@Model.prodSpec.ProductMaterial</td></tr>
+                        <tr><th>使用期限</th><td>@Model.prod.Shelfdate 天</td></tr>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="font-size:20px">
+                    商品評價
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <h3>評論</h3>
+                    <div style="background-color: rgb(238, 238, 238);align-items:center ;padding-top:5px; padding:8px; display:flex; justify-content:space-between">
+                        <p style="font-size:18px;margin-bottom:0">共 @Model.prodReviewList.Count 項 評論</p>
+                        <p style="font-size:18px;margin-bottom:0;margin-right:20px">
+                            @*<span>排序方式:</span>*@
+                            <select class="form-select">
+                                <option>最新發佈</option>
+                                <option>最高至最低評價</option>
+                                <option>最低至最高評價</option>
+                            </select>
+                        </p>
+                        @*<p style="font-size:18px;margin-bottom:0"></p>*@
+                    </div>
+                    @foreach (var item in Model.prodReviewList)
+                    {
+                        <div class="mt-4" style="background-color: rgb(246, 246, 246);padding:15px">
+                            <span> @item.RatingType.RatingTypeName</span>
+                            <span style="font-weight:bold"> @item.Member.MemberName.FirstOrDefault() 先生/小姐</span>
+                            <span> @item.CreateDate</span>
+                            <br />
+                            <br />
+                            <h5> @item.CommentContent</h5>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+        let btnAddToCart = document.getElementById("btnAddToCart");
+        console.log(btnAddToCart);
+
+        btnAddToCart.addEventListener("click", function () { alert("成功加入購物車!")});
+
+
+    </script>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    
+
+}

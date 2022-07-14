@@ -1,0 +1,310 @@
+@model Medical.ViewModel.CClinicDetailViewModel
+
+@{ ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Admin_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="sticky-top mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">新增排班</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
+                            <ul class="fc-color-picker" id="color-chooser">
+                                <li><a class="text-primary" href="#" title="早上">早上<i class="fas fa-square"></i></a></li>
+                                @*<li><a class="text-warning" href="#" title="中午">中午<i class="fas fa-square"></i></a></li>*@
+                                <li><a class="text-success" href="#" title="下午">下午<i class="fas fa-square"></i></a></li>
+                                <li><a class="text-danger" href="#" title="晚上">晚上<i class="fas fa-square"></i></a></li>
+                                <li><a class="text-warning" href="#" title="其他">其他<i class="fas fa-square"></i></a></li>
+                            </ul>
+                        </div>
+                        <!-- /btn-group -->
+                        <div>
+                            <div class="input-group" style="flex-direction: column">
+                                <div>
+                                    <section>醫生</section>
+                                    <select asp-for="DoctorId" id="doctorlist" class="form-control"></select>
+                                </div>
+
+                                @*<div>
+                                    <section>時段</section>
+                                    <select asp-for="PeriodId" id="periodlist" class="form-control">
+                                        <option value="1">早上</option>
+                                        <option value="2">下午</option>
+                                        <option value="3">晚上</option>
+                                        <option value="4">其他</option>
+                                    </select>
+                                </div>*@
+                                <div>
+                                    <section>診間</section>
+                                    <select asp-for="RoomId" id="roomlist" class="form-control">
+                                        <option value="1">501</option>
+                                        <option value="2">502</option>
+                                        <option value="3">503</option>
+                                        <option value="4">504</option>
+                                        <option value="5">505</option>
+                                        <option value="6">506</option>
+                                    </select>
+
+                                </div><br />
+
+                                <button id="add-new-event" type="button" class="btn btn-primary">新增</button>
+                                <!-- /btn-group -->
+                            </div>
+                        </div>
+                        <hr />
+                        <div id="external-events">
+                            @*<div class="external-event bg-success">Lunch</div>*@
+                            <div class="checkbox">
+                                <label for="drop-remove">
+                                    <input type="checkbox" id="drop-remove">
+                                    拖移後移除
+                                </label>
+                            </div>
+                        </div>
+                        <!-- /input-group -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card card-primary">
+                <div class="card-body p-0">
+                    <!-- THE CALENDAR -->
+                    <div id="calendar"></div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+            $(function () {
+                var total;
+                fetch("@Url.Content("~/Admin/AdminClinicDetail/loadData")")
+                    .then(
+                        (respone) => {
+                            return respone.text();
+                        })
+                    .then(
+                        (datas) => {
+                            let eventList = [];
+                            let data = datas.split('#');
+                            //var timeDate = data[i];
+                            for (var i = 0, len = data.length; i < len; i++) {
+
+                                var ii = data[i].split(',');
+                                console.log(ii[2]);
+                                var date = ii[2].split('/');
+
+                                let dd = `${date[0]}-${date[1]}-${date[2]} ${date[3]}:${date[4]}:${date[5]}`;
+
+                                var item = {
+                                    id: ii[0],
+                                    title: ii[1],
+                                    start: dd,
+                                    allDay: true,
+                                    backgroundColor: '#0073b7',
+                                    borderColor: '#0073b7',
+                                    extendedProps: {
+                                        room: ii[3],
+                                        period: ii[4]
+                                    }
+                                };
+                                eventList.push(item);
+                            }
+                            return eventList;
+                        })
+                    .then(
+                        (list) => {
+
+                            /* initialize the external events
+                             * -----------------------------------------------------------------*/
+                            function ini_events(ele) {
+                                ele.each(function () {
+                                    fetch("@Url.Content("~/Admin/AdminClinicDetail/loadData")")
+                                        .then(
+                                            (respone) => {
+                                                return respone.text();
+                                            })
+                                        .then((d) => {
+                                            count = parseInt(d, 10) + 1;
+                                            total = count;
+                                                return count;
+                                            })
+                                        .then((count) => {
+                                            // create an Event Object (https://fullcalendar.io/docs/event-object)
+                                            // it doesn't need to have a start or end
+                                            var eventObject = {
+                                                id: count,
+                                                title: $.trim($(this).text()) // use the element's text as the event title
+                                            }
+
+                                            // store the Event Object in the DOM element so we can get to it later
+                                            $(this).data('eventObject', eventObject)
+
+                                            // make the event draggable using jQuery UI
+                                            $(this).draggable({
+                                                zIndex: 1070,
+                                                revert: true, // will cause the event to go back to its
+                                                revertDuration: 0  //  original position after the drag
+                                            })
+                                        }
+                                    )
+                                })
+                            }
+
+                            ini_events($('#external-events div.external-event'))
+
+                            /* initialize the calendar
+                             -----------------------------------------------------------------*/
+                            //Date for the calendar events (dummy data)
+                            var date = new Date()
+
+
+                            var Calendar = FullCalendar.Calendar;
+                            var Draggable = FullCalendar.Draggable;
+
+                            var containerEl = document.getElementById('external-events');
+                            var checkbox = document.getElementById('drop-remove');
+                            var calendarEl = document.getElementById('calendar');
+
+                            // initialize the external events
+                            // -----------------------------------------------------------------
+
+                            new Draggable(containerEl, {
+                                itemSelector: '.external-event',
+                                eventData: function (eventEl) {
+                                    updateToServer(eventEl);
+                                    return {
+                                        title: eventEl.innerText,
+                                        backgroundColor: window.getComputedStyle(eventEl, null).getPropertyValue('background-color'),
+                                        borderColor: window.getComputedStyle(eventEl, null).getPropertyValue('background-color'),
+                                        textColor: window.getComputedStyle(eventEl, null).getPropertyValue('color'),
+                                    };
+                                }
+                            });
+
+                            var calendar = new Calendar(calendarEl, {
+                                headerToolbar: {
+                                    left: 'prev,next today',
+                                    center: 'title',
+                                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                                },
+                                themeSystem: 'bootstrap',
+                                timeZone: 'Asia/Taipei',
+                                events: list,
+                                editable: true,
+                                droppable: true, // this allows things to be dropped onto the calendar !!!
+                                drop: function (info) {
+                                    // is the "remove after drop" checkbox checked?
+                                    if (checkbox.checked) {
+                                        // if so, remove the element from the "Draggable Events" list
+                                        info.draggedEl.parentNode.removeChild(info.draggedEl);
+                                    }
+                                },
+                                eventDrop: function (info, revertFunc) {
+                                    alert(info.event.title + " 移至 " + moment(info.event.start).format("YYYY/MM/DD"));
+                                    updateToServer(info);
+
+                                    //if (!confirm("Are you sure about this change?")) {
+                                    //    revertFunc();
+                                    //}
+                                }
+                            });
+
+
+                            calendar.render();
+                            // $('#calendar').fullCalendar()
+
+                            /* ADDING EVENTS */
+                            var currColor = '#3c8dbc' //Red by default
+                            // Color chooser button
+                            $('#color-chooser > li > a').click(function (e) {
+                                e.preventDefault()
+                                // Save color
+                                currColor = $(this).css('color')
+                                // Add color effect to button
+                                $('#add-new-event').css({
+                                    'background-color': currColor,
+                                    'border-color': currColor
+                                })
+                            })
+                            $('#add-new-event').click(function (e) {
+                                e.preventDefault()
+                                // Get value and make sure it is not null
+                                var val = $('#doctorlist').val();
+                                var val2 = $('#periodlist option:selected');
+                                var val3 = $('#roomlist option:selected');
+                                if (val.length == 0) {
+                                    return
+                                }
+                                // Create events
+                                var event = $('<div />')
+                                event.css({
+                                    'background-color': currColor,
+                                    'border-color': currColor,
+                                    'color': '#fff'
+                                }).addClass('external-event')
+                                event.text(`${val} - ${val2.text()} - ${val3.text()}`)
+                                $('#external-events').prepend(event)
+
+                                // Add draggable funtionality
+                                ini_events(event)
+
+                                // Remove event from text input
+                                //$('#new-event').val('')
+                            })
+                        }
+                    );
+
+                loadDoctors();
+
+                const selDoctor = document.querySelector("#doctorlist");
+                const selPeriod = document.querySelector("#periodlist");
+                const selRoom = document.querySelector("#roomlist");
+
+                async function loadDoctors() {
+                    let count = 0;
+                    const response = await fetch('@Url.Content("~/Admin/AdminClinicDetail/doctorList")');
+                    const datas = await response.json();
+                    datas.forEach(city => {
+                        const opt = new Option(city, city);
+                        selDoctor.options.add(opt);
+                    });
+                }
+
+                async function updateToServer(info) {
+                    const list = {
+                        id: info.event.id,
+                        doctor: info.event.title,
+                        period: info.event.extendedProps.period,
+                        room: info.event.extendedProps.room,
+                        date: moment(info.event.start).format("YYYY/MM/DD/HH/mm/ss")
+                    };
+
+                    $.post('@Url.Content("~/Admin/AdminClinicDetail/Method")', list);
+                }
+
+                @*async function loadRooms() {
+                    const response = await fetch('@Url.Content("~/Admin/AdminClinicDetail/roomList")');
+                    const datas = await response.json();
+                    let count = 0;
+                    datas.forEach(city => {
+                        //new Option(text,val)
+                        const opt = new Option(city, count);
+                        selDoctor.options.add(opt);
+                        count++;
+                    });
+                }*@
+
+            })
+
+    </script>
+}

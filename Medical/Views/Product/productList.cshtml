@@ -1,0 +1,146 @@
+﻿@using Medical.ViewModel;
+@model CProductForShowViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!-- Hero Start -->
+
+<ul class="breadcrumb mt-5" style="background-color:white;font-size:18px">
+    <li class="breadcrumb-item"><a href="#">首頁</a></li>
+    <li class="breadcrumb-item"><a href="~/Product/ProductList">產品列表</a></li>
+</ul>
+
+<div class="container-fluid bg-primary py-5 hero-header mb-5">
+    <div class="row py-3">
+        <div class="col-12 text-center">
+            <h3 class="display-3 text-white animated zoomIn">商品總覽</h3>
+            @*<a href="" class="h4 text-white">查看購物車</a>
+                <i class="far fa-circle text-white px-2"></i>
+                <a href="" class="h4 text-white">Dentist</a>*@
+        </div>
+    </div>
+</div>
+<!-- Hero End -->
+<hr />
+<br />
+
+<div class="container-fluid" style="margin: 0;padding: 0;margin-top: 20px ;width: 100%;margin: 0 auto;">
+    <div class="row">
+        @*===============Container--Start================*@
+
+        @*=============== Left--Part--Start================*@
+        <div class="col-md-2 h-100">
+
+            
+
+            <h3 class="">篩選條件</h3>
+            <hr />
+            <h4>種類</h4>
+            @foreach (var cprod in Model.brandList)
+            {
+                <input class="mt-3" type="checkbox" name="productBrandId" value="@cprod.ProductBrandId" />@:&nbsp<label style="font-size:21px">@cprod.ProductBrandName</label>
+                <br />
+            }
+            <hr />
+            <h4>品牌</h4>
+            @foreach (var cprod in Model.cateList)
+            {
+                <input class="mt-3" type="checkbox" name="productCategoryId" value="@cprod.ProductCategoryId" />@:&nbsp<label style="font-size:21px">@cprod.ProductCategoryName</label>
+                <br />
+            }
+            <hr />
+        </div>
+
+        @*=============== Left--Part--End================*@
+
+        @*=============== Right--Part--Start ================*@
+        <div class="col-md-10" padding:0;>
+
+            @*========== 標題 ==========*@
+            <!--<div>
+                <h2>產品列表</h2>
+            </div>
+
+            <br />-->
+            @*========== 廣告圖片 ==========*@
+            <!--<div style="max-width:600px ; height:80px; max-height:80px">
+                <img src="~/images/+5c5f05f3-cf37-406a-b407-ad6fbdbed055.jpg" alt="Alternate Text" style="height: 100%; width: 100%" />
+            </div>
+
+            <br />-->
+            @*========== 條件選擇 ==========*@
+            <div>
+                &nbsp;
+                <span style="font-size:16px;font-weight:bold">排序&nbsp;:&nbsp;</span>
+                <select style="font-size:16px;font-weight:bold">
+                    <option value="value">價錢(由高到低)</option>
+                </select>
+            </div>
+            <br />
+            <hr />
+            @*========== 商品表 ==========*@
+            <div class="row" id="prodRow">
+                @{ int count = 0;}
+                @foreach (var cprod in Model.prodSpec)
+                {
+                    count++;
+
+                    <div class="col-md-3 col-sm-6 mt-4">
+                        <div class="card h-100">
+                            <img src="~/images/@cprod.ProductImage" width="140" height="200" class="card-img-top" />
+                            <div class="card-body">
+                                <a href="~/Product/ProductDetail?productName=@cprod.Product.ProductName" id="@cprod.ProductId" onclick="detail(event)"> <h5>@Html.DisplayFor(modelItem => cprod.Product.ProductName)</h5> </a>
+                                <span> @Html.DisplayFor(modelItem => cprod.UnitPrice)</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            @*========== 商品表--End ==========*@
+            <hr />
+            @*========== 換頁 ==========*@
+            <div class="col-md-12 text-center">
+                <form asp-action="productList" asp-controller="Product" method="post" style="text-align:center">
+                    <div class="">
+                        <ul class="pagination justify-content-center">
+                            @for (int i = 1; i <= Model.PageCount; i++)
+                            {
+                                <li class="page-item">
+                                    @if (i != Model.CurrentPageIndex)
+                                    {
+                                        <a class="page-link" href="javascript:PagerClick(@i);">@i</a>
+                                    }
+                                    else
+                                    {
+                                        <a class="page-link"> @i</a>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                        <input type="hidden" id="hfCurrentPageIndex" name="currentPageIndex" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>@*===============  Row--End  ================*@
+</div>
+@*===============  Container--End  ================*@
+
+
+
+
+
+
+
+
+@section Scripts{
+
+    <script type="text/javascript">
+        function PagerClick(index) {
+            document.getElementById("hfCurrentPageIndex").value = index;
+            document.forms[0].submit();
+        }
+    </script>
+}

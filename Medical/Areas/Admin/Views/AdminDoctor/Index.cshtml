@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Medical.Models.Doctor>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, AuthoringTagHelpers
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Admin_Layout.cshtml";
+}
+
+<h1>醫生主頁(後台)</h1>
+@using (Html.BeginForm())
+{
+    @:關鍵字 @Html.TextBox("txtKeyword")
+    <input type="submit" value="查詢" />
+}
+
+<p>
+    @Html.ActionLink("新增醫師帳戶", "CreateDetail")
+</p>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                序
+            </th>
+            <th>
+                醫生姓名)
+            </th>
+
+            <th>
+                學歷
+            </th>
+            <th>
+                職位
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int count = 0;
+            foreach (var item in Model)
+            {
+                count++;
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        <img width="100" height="100" src="~/images/@Html.DisplayFor(modelItem => item.PicturePath)" />"
+                        <br>
+                        @Html.DisplayFor(modelItem => item.DoctorName)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Education)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.JobTitle)
+                    </td>
+
+                    <td>
+                        @Html.ActionLink("管理醫師評論", "DoctorRatinglist", new { id = item.DoctorId }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("修改資料", "EditDetail", new { id = item.DoctorId }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("顯示資料", "Details", new { id = item.DoctorId }, new { @class = "btn btn-success" })
+                        @Html.ActionLink("刪除", "Delete", new { id = item.DoctorId }, new { onclick = "return confirm('確定刪除?')", @class = "btn btn-danger" })
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

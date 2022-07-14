@@ -1,0 +1,39 @@
+﻿@model Medical.Models.Doctor
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <h4>醫生評論</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            <input type="hidden" name="DoctorId" value="@Model.DoctorId" />
+            <label style="font-size:24px ;font-weight:bold">醫師姓名：</label>
+            <label style="font-size:24px">@Model.DoctorName</label>
+            <div class="col-md-10">
+                <label style="font-size:24px">給予分數</label>
+                <select name="RatingTypeId">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select><br>
+            <textarea name="Rating" rows="15" cols="100"></textarea>
+            </div>
+        </div>
+            <div class="form-group">
+                <input type="submit" value="送出" class="btn  btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

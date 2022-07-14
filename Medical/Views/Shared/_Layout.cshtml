@@ -1,0 +1,292 @@
+﻿<!DOCTYPE html>
+@using Medical.Models;
+@using Medical.ViewModel;
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Mvc;
+@using System.Linq;
+@using System.Text.Json;
+
+@{
+    string logJson = "";
+    string showID = "";
+    string logState = "";
+    string LoginbuttonValue = "";
+    string LogoutbuttonValue = "";
+
+    CMemberAdminViewModel vm = null;
+    if (!Context.Session.Keys.Contains(CDictionary.SK_LOGINED_USE))
+    {
+
+        showID = "尚未登入";
+        LoginbuttonValue = "請登入";
+        LogoutbuttonValue = "";
+    }
+    else
+    {
+        logJson = Context.Session.GetString(CDictionary.SK_LOGINED_USE);
+        vm = JsonSerializer.Deserialize<CMemberAdminViewModel>(logJson);
+        showID = vm.MemberName;
+        logState = "";
+        LogoutbuttonValue = "登出";
+
+    }
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>DentCare - Dental Clinic Website Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="~/img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="~/lib/animate/animate.min.css" rel="stylesheet">
+    <link href="~/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="~/lib/twentytwenty/twentytwenty.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="~/css/style.css" rel="stylesheet">
+    @await RenderSectionAsync("css", required: false)
+</head>
+
+<body>
+    <header>
+        <!-- Spinner讀取圖示 Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary m-1" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-dark m-1" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-secondary m-1" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+        <!-- Topbar置頂資訊欄 Start -->
+        <div class="container-fluid bg-light ps-5 pe-0 d-none d-lg-block">
+            <div class="row gx-0">
+                <div class="col-md-6 text-center text-lg-start mb-2 mb-lg-0">
+                    <div class="d-inline-flex align-items-center">
+                        <!-- 上方營業時間註解 -->
+                        <small class="py-2"><i class="far fa-clock text-primary me-2"></i>營業時間: Mon - Tues : 6.00 am - 10.00 pm, 周日公休 </small>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center text-lg-end">
+                    <div class="position-relative d-inline-flex align-items-center bg-primary text-white top-shape px-5">
+                        <!-- 官網信箱 -->
+                        <div class="me-3 pe-3 border-end py-2">
+                            <p class="m-0"><i class="fa fa-envelope-open me-2"></i>hanks@gmail.com</p>
+                        </div>
+                        <!-- 官網電話 -->
+                        <div class="py-2">
+                            <p class="m-0"><i class="fa fa-phone-alt me-2"></i>02-2431123456</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Topbar End -->
+        <!-- Navbar 移動選單條 Start -->
+        <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm px-5 py-3 py-lg-0">
+            <!-- 漢克斯眼科-->
+            <a href="~/Home/index" class="navbar-brand p-0">
+                <h1 class="m-0 text-primary"><i class="fa fa-eye me-2"></i>漢克斯智能眼科</h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto py-0">
+                    <!-- 調整位置狀態 -->
+                    <!-- 選單 -->
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">智能資訊</a>
+                        <div class="dropdown-menu m-0">
+                            <a href="price.html" class="dropdown-item">最新消息</a>
+                            <a href="team.html" class="dropdown-item">門診時間表</a>
+                            <a href="testimonial.html" class="dropdown-item">智能客服</a>
+                            <a href="~/FrontArticle/List" class="dropdown-item">衛教文章</a>
+                        </div>
+                    </div>
+                    <a href="~/Doctor/List" class="nav-item nav-link">醫療團隊</a>
+                    <div class="nav-item dropdown">
+                        <a href="~/Reserve/ReserveList" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">網路掛號</a>
+                        <div class="dropdown-menu m-0">
+                            <a href="~/Reserve/ReserveList" class="dropdown-item">線上掛號</a>
+                            <a href="~/Reserve/ReserveSearch" class="dropdown-item">查詢與取消</a>
+                        </div>
+                    </div>
+                    <a href="~/ClinicDetail/List" class="nav-item nav-link">即時看診進度</a>
+                    <div class="nav-item dropdown">
+                        <a href="/Product/productList" class="nav-link dropdown-toggle active" " data-bs-toggle="dropdown">線上商城</a>
+                        <div class="dropdown-menu m-0">
+                            <a href="/Product/ProductList" class="dropdown-item">產品列表</a>
+                            <a href="/Product/CartViewList" class="dropdown-item">我的購物車</a>
+                            <a href="/Product/CheckViewList" class="dropdown-item">結帳</a>
+                            <a href="/Product/QueryOrder" class="dropdown-item">訂單查看</a>
+                        </div>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-item nav-link">會員中心</a>
+                        <div class="dropdown-menu m-0">
+                            <a href="/PatientRecord/List" class="dropdown-item">病例查詢</a>
+                            <a href="/RatingDoctor/List" class="dropdown-item">醫生評論</a>
+                            <a href="/AllPatientRecord/List" class="dropdown-item">醫師病例總覽(放進哲楨的後台)</a>
+                            <a href="/Product/OrderDetailList" class="dropdown-item">訂單紀錄</a>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- 購物車清單開始-->
+                <!--<div class="dropdown ml-auto">
+                    <button class="btn btn-cart btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-shopping-cart text-dark fa-2x"></i>
+                        <span class="badge badge-pill badge-danger">9</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" style="min-width: 300px" aria-labelledby="dropdownMenuButton">
+                        <div class="p-3">
+                            <h6>已選擇商品</h6>
+                            <table class="table table-sm ">
+                                <tbody>
+                                    <tr>
+                                        <td class="align-middle text-center">
+                                            <a href="#removeModal" data-price="1999" data-title="不求人" data-toggle="modal"
+                                               data-target="#removeModal"><i class="far fa-trash-alt "></i></a>
+                                        </td>
+                                        <td class="align-middle">不求人</td>
+                                        <td class="align-middle">1件</td>
+                                        <td class="align-middle text-right">$1999</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-middle text-center">
+                                            <a href="#removeModal" data-price="999" data-title="一級偽裝帽" data-toggle="modal"
+                                               data-target="#removeModal"><i class="far fa-trash-alt "></i></a>
+                                        </td>
+                                        <td class="align-middle">一級偽裝帽</td>
+                                        <td class="align-middle">1件</td>
+                                        <td class="align-middle text-right">$999</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <a href="#" class="btn btn-block btn-primary btn-sm text-white">確認結帳</a>
+                        </div>
+                    </div>
+                </div>-->
+                <!-- 購物車清單結束-->
+                <!-- 放大鏡在這裡 我先註解掉-->
+                @*<button type="button" class="btn text-dark" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fa fa-search"></i></button>*@
+                @*<a href="/ClinicDetail/List" class="btn btn-primary py-2 px-4 ms-3">登入</a>*@
+                <a class="btnControl">
+                    @*@Html.ActionLink("請登入", "Login", "Login", new { @class = "nav-item nav-link" })*@
+                    <a asp-action="Login" asp-controller="Login" class="btn btn-primary" id="loginButton">@LoginbuttonValue</a>
+                    <a asp-action="Logout" asp-controller="Login" class="btn btn-primary" id="looutButton">@LogoutbuttonValue</a>
+                </a>
+                <p id="showMe">
+                    @showID @logState
+                </p>
+
+
+                
+            </div>
+        </nav>
+        <!-- Navbar End -->
+
+
+
+
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    </header><!-- /header放這裡 動態條才會跟著 -->
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light py-5 wow fadeInUp" data-wow-delay="0.3s" style="margin-top: 0px;">
+        <div class="container pt-5">
+            <div class="row g-5 pt-4">
+                <div class="col-lg-3 col-md-6">
+                    <h3 class="text-white mb-4">Quick Links</h3>
+                    <div class="d-flex flex-column justify-content-start">
+                        <a class="text-light mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>智能資訊</a>
+                        <a class="text-light mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>醫療團隊</a>
+                        <a class="text-light mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>網路掛號</a>
+                        <a class="text-light mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>線上商城</a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h3 class="text-white mb-4">Get In Touch</h3>
+                    <p class="mb-2"><i class="bi bi-geo-alt text-primary me-2"></i>106台北市大安區復興南路一段390號2樓</p>
+                    <p class="mb-2"><i class="bi bi-envelope-open text-primary me-2"></i>hanks@gmail.com</p>
+                    <p class="mb-0"><i class="bi bi-telephone text-primary me-2"></i>02-2431123456</p>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h3 class="text-white mb-4">Follow Us</h3>
+                    <div class="d-flex">
+                        <a class="btn btn-lg btn-primary btn-lg-square rounded me-2" href="#"><i class="fab fa-twitter fw-normal"></i></a>
+                        <a class="btn btn-lg btn-primary btn-lg-square rounded me-2" href="#"><i class="fab fa-facebook-f fw-normal"></i></a>
+                        <a class="btn btn-lg btn-primary btn-lg-square rounded me-2" href="#"><i class="fab fa-linkedin-in fw-normal"></i></a>
+                        <a class="btn btn-lg btn-primary btn-lg-square rounded" href="#"><i class="fab fa-instagram fw-normal"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid text-light py-4" style="background: #051225;">
+        <div class="container">
+            <div class="row g-0">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-md-0">&copy; <a class="text-white border-bottom" href="#">漢克斯智能眼科</a>. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0">
+                        Designed by <a class="text-white border-bottom" href="https://htmlcodex.com">HTML Codex</a><br>
+                        Distributed by <a class="text-white border-bottom" href="https://themewagon.com">ThemeWagon</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+    <!-- Back to Top -->
+
+
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/wow/wow.min.js"></script>
+    <script src="~/lib/easing/easing.min.js"></script>
+    <script src="~/lib/waypoints/waypoints.min.js"></script>
+    <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="~/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="~/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="~/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="~/lib/twentytwenty/jquery.event.move.js"></script>
+    <script src="~/lib/twentytwenty/jquery.twentytwenty.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="~/js/main.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

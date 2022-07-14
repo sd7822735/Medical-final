@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Medical.ViewModel.CRatingDoctorViewModel>
+
+@{
+    ViewData["Title"] = "DoctorRatinglist";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>醫生評論管理</h1>
+<div>
+    <a asp-action="Index">回到上一頁</a>
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                評論編號
+            </th>
+            <th>
+                醫師姓名
+            </th>
+            <th>
+                醫師評分
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rating)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@{ 
+    int count = 0;
+    foreach (var item in Model) {
+        count++;
+        <tr>
+            <td>
+                @count
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Doctor.DoctorName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RatingType.RatingTypeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rating)
+            </td>
+            <td>
+                @Html.ActionLink("刪除", "DoctorRatingDelete", new { id = item.RatingDoctorId }, new { onclick = "return confirm('確定要刪除?')" })
+            </td>
+        </tr>
+        }
+    }
+    </tbody>
+</table>
+

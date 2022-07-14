@@ -1,0 +1,120 @@
+﻿@model IEnumerable<Medical.ViewModel.OrderDetailViewModel>
+
+@{
+    ViewData["Title"] = "list";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Hero Start -->
+<div class="container-fluid bg-primary py-5 hero-header mb-5">
+    <div class="row py-3">
+        <div class="col-12 text-center">
+            <h3 class="display-3 text-white animated zoomIn">歷史訂單</h3>
+        </div>
+    </div>
+</div>
+<!-- Hero End -->
+<hr />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                產品編號
+            </th>
+            <th>
+                商品名稱
+            </th>
+            <th>
+                購買日期
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                購買者
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int count = 0;
+            foreach (var item in Model)
+            {
+                count++;
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Product.ProductName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Order.OrderDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Member.MemberName)
+                    </td>
+                    <td>
+                        @*<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="">新增產品評論</button>*@
+                        @Html.ActionLink("新增評論", "createReview", new { id = item.Product.ProductId }, new { onclick = "return confirm('是否前往新增產品評論?')" })
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<!-- Modal -->
+<!--<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">新增產品評論</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">分數</label>
+                        <input type="text" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">評論</label>
+                        <textarea class="form-control" id="message-text"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send message</button>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+@section Scripts
+{
+    <script>
+        var exampleModal = document.getElementById('exampleModal')
+        exampleModal.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            var recipient = button.getAttribute('data-bs-whatever')
+            // If necessary, you could initiate an AJAX request here
+            // and then do the updating in a callback.
+            //
+            // Update the modal's content.
+            var modalTitle = exampleModal.querySelector('.modal-title')
+            var modalBodyInput = exampleModal.querySelector('.modal-body input')
+
+            modalTitle.textContent = 'New message to ' + recipient
+            modalBodyInput.value = recipient
+        })
+
+    </script>
+}
