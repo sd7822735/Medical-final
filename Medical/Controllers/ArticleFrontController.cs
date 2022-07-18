@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace Medical.Controllers
 {
-    public class FrontArticleController : Controller
+    public class ArticleFrontController : Controller
     {
         public IActionResult Index()
         {
             return View();
         }
         private readonly MedicalContext _medicalContext;
-        public FrontArticleController(MedicalContext medicalContext)
+        public ArticleFrontController(MedicalContext medicalContext)
         {
             _medicalContext = medicalContext;
         }
