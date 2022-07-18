@@ -58,7 +58,7 @@ namespace Medical.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=Medical;Integrated Security=True");
             }
         }
@@ -125,6 +125,8 @@ namespace Medical.Models
                 entity.Property(e => e.ArticleId).HasColumnName("ArticleID");
 
                 entity.Property(e => e.AdminId).HasColumnName("AdminID");
+
+                entity.Property(e => e.ArPicturePath).HasMaxLength(50);
 
                 entity.Property(e => e.Articeltitle).HasMaxLength(50);
 
@@ -412,7 +414,7 @@ namespace Medical.Models
 
                 entity.Property(e => e.NewsCategoryId).HasColumnName("NewsCategoryID");
 
-                entity.Property(e => e.PublishDate).HasColumnType("datetime");
+                entity.Property(e => e.NewsPicturePath).HasMaxLength(50);
 
                 entity.HasOne(d => d.Admin)
                     .WithMany(p => p.News)
